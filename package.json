@@ -1,0 +1,15 @@
+{
+  "name": "contagemteclas",
+  "version": "1.0.0",
+  "type": "module",
+  "main": "script.js",
+  "scripts": {
+    "test": "juadley"
+  },
+  "author": "juadley",
+  "license": "ISC",
+  "description": "",
+  "dependencies": {
+    "express": "^4.19.2"
+  }
+}
