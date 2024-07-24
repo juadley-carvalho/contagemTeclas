@@ -19,7 +19,7 @@ body {
 }
 
 .keyboard {
-    grid-template-columns: repeat(16, 1fr);
+    grid-template-columns: repeat(22, 1fr);
     max-width: 800px;
 }
 
