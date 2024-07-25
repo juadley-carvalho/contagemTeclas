@@ -2,21 +2,32 @@ from pynput import keyboard
 from collections import defaultdict
 import json
 import os
-import datetime
 
 # Dicionário para armazenar contagem de teclas
 key_count = defaultdict(int)
 
-# Teclas atualmente pressionadas
+# Teclas atualmente pressionadas (evitar vários registros de uma tecla mantida pressionada)
 pressed_keys = set()
 
-# Carregar o arquivo JSON existente (se existir)
+# Tecla para parada do script
+stop_key = keyboard.Key.f7
+
+# Carregar o arquivo JSON, se existir, ou cria um arquivo vazio
 if os.path.exists('key_count.json'):
-    with open('key_count.json', 'r') as file:
+    with open('key_count.json', 'r', encoding='windows-1252') as file:
         key_count.update(json.load(file))
+else:
+    with open('key_count.json', 'w', encoding='windows-1252') as file:
+        file.write('{}')
 
 # Identificar teclado numérico
 num_pad_keys = {
+    65: 'ctrl_a',
+    67: 'ctrl_c',
+    83: 'ctrl_s',
+    86: 'ctrl_v',
+    88: 'ctrl_x',
+    90: 'ctrl_z',
     96: 'num_0',
     97: 'num_1',
     98: 'num_2',
@@ -38,11 +49,14 @@ num_pad_keys = {
 def getKey(key):
     try:
         # Convertendo a tecla para string
+        # Caso seja uma tecla presente em num_pad_keys, retorna o valor correspondente
+        print(key.vk)
         if hasattr(key, 'vk') and key.vk in num_pad_keys:
             key_str = num_pad_keys[key.vk]
         else:
             key_str = key.char
-        # Verifica se retorna None, quando utiliza o teclado numérico
+
+        # Verifica se retorna None (ao utilizar Shift, Ctrl, etc.)
         if key_str is not None:
             # Atribuir a tecla normal quando pressionada junto ao Shift
             if key_str == '"':
@@ -103,7 +117,7 @@ def getKey(key):
 # Função chamada quando uma tecla é pressionada
 def on_press(key):
 
-    key_str = getKey(key)
+    key_str = getKey(key).lower()
 
     # Verifica se a tecla está sendo pressionada, evitando registrar várias vezes
     if key_str not in pressed_keys:
@@ -124,7 +138,7 @@ def on_press(key):
 # Função chamada quando uma tecla é liberada
 def on_release(key):
 
-    key_str = getKey(key)
+    key_str = getKey(key).lower()
 
     # Remove a tecla da lista de teclas pressionadas
     if key_str in pressed_keys:
@@ -133,10 +147,10 @@ def on_release(key):
     if key in pressed_keys:
         pressed_keys.remove(key)
 
-    if str(key) in pressed_keys:
-        pressed_keys.remove(str(key))
+    if str(key).lower() in pressed_keys:
+        pressed_keys.remove(str(key).lower())
 
-    if key == keyboard.Key.f7:
+    if key == stop_key:
         # Parar o listener
         return False
 

@@ -1,8 +1,33 @@
+// Inclui eventos de mouse nas teclas
+document.querySelectorAll('.key').forEach( key => {
+    key.addEventListener('mouseover', showCount)
+    key.addEventListener('mouseout', restoreKey)
+})
+
+// Funções para mostrar contagem das teclas
+function showCount(event) {
+    const keyElement = event.target
+    const originalText = keyElement.innerHTML
+    const count = keyElement.getAttribute('data-count')
+    keyElement.setAttribute('data-original', originalText)
+    keyElement.innerHTML = count
+}
+
+function restoreKey(event) {
+    const keyElement = event.target
+    keyElement.innerHTML = keyElement.getAttribute('data-original')
+}
+
 // Função para carregar o arquivo JSON com a contagem de teclas
 async function loadJson() {
     try {
         const response = await fetch('./scriptPython/key_count.json')
-        const data = await response.json()
+        const blob = await response.blob()
+        const text = await blob.text()
+        const decoder = new TextDecoder('utf-8')
+        const decodedText = decoder.decode(new TextEncoder().encode(text))
+        //const data = await response.json()
+        const data = JSON.parse(decodedText)
         return data
     } catch (error) {
         console.error(error)
@@ -33,12 +58,14 @@ function getColor(frequency) {
 async function updateKeyColors() {
     const keyFrequency = await loadJson()
     for (const [key, frequency] of Object.entries(keyFrequency)) {
-        const keyElement = document.getElementById(`key-${key}`);
+        console.log(`${key} : ${frequency}`)
+        const keyElement = document.getElementById(`key-${key}`)
         if (keyElement) {
-            keyElement.style.backgroundColor = getColor(frequency);
+            keyElement.style.backgroundColor = getColor(frequency)
+            keyElement.setAttribute('data-count', frequency)
         }
     }
 }
 
 // Executar a função de atualização das cores quando a página estiver totalmente carregada
-window.onload = updateKeyColors;
+window.onload = updateKeyColors

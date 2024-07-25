@@ -1,2 +1,5 @@
 #Ignorar arquivo de contagem de teclas
 scriptPython/key_count.json
+
+#Ignorar diretório de backup
+backup/
