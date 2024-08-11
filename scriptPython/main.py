@@ -14,37 +14,61 @@ stop_key = keyboard.Key.f7
 
 # Carregar o arquivo JSON, se existir, ou cria um arquivo vazio
 if os.path.exists('key_count.json'):
-    with open('key_count.json', 'r', encoding='windows-1252') as file:
+    with open('key_count.json', 'r', encoding='utf-8') as file:
         key_count.update(json.load(file))
 else:
-    with open('key_count.json', 'w', encoding='windows-1252') as file:
+    with open('key_count.json', 'w', encoding='utf-8') as file:
         file.write('{}')
 
 # Identificar teclado numérico
 num_pad_keys = {
-    65: 'ctrl_a',
-    67: 'ctrl_c',
-    83: 'ctrl_s',
-    86: 'ctrl_v',
-    88: 'ctrl_x',
-    90: 'ctrl_z',
-    96: 'num_0',
-    97: 'num_1',
-    98: 'num_2',
-    99: 'num_3',
-    100: 'num_4',
-    101: 'num_5',
-    102: 'num_6',
-    103: 'num_7',
-    104: 'num_8',
-    105: 'num_9',
-    110: 'num_decimal',
-    107: 'num_add',
-    109: 'num_subtract',
-    106: 'num_multiply',
-    111: 'num_divide',
-    194: 'num_dot',
+    "0": 'num_0',
+    "1": 'num_1',
+    "2": 'num_2',
+    "3": 'num_3',
+    "4": 'num_4',
+    "5": 'num_5',
+    "6": 'num_6',
+    "7": 'num_7',
+    "8": 'num_8',
+    "9": 'num_9',
+    ",": 'num_decimal',
+    "+": 'num_add',
+    "-": 'num_subtract',
+    "*": 'num_multiply',
+    "/": 'num_divide',
 }
+
+def get_key_representation(key):
+    try:
+        if hasattr(key, 'vk'):
+            print(f'Vk: {key.vk}')
+
+            # Verifica se tecla é do teclado numérico
+            if key.vk in [None, 65437, 65439]:
+                if key.vk == None:
+                    return num_pad_keys[key.char]
+                elif key.vk == 65437:
+                    return num_pad_keys["5"]
+                elif key.vk == 65439:
+                    return num_pad_keys[","]
+                print(f'Teclado numérico! {key.char}')
+
+            elif key.vk == 65027:
+                return 'alt_gr'
+
+        # Se for uma tecla de caractere, retorna o caractere
+        if hasattr(key, 'char') and key.char:
+            print(f'Key.char: {key.char}')
+            return key.char.lower()
+        elif hasattr(key, 'name'):
+            print(f'Key.name: {key.name}')
+            return key.name.lower()
+        else:
+            print(f'str(key): {str(key)}')
+    except AttributeError:
+        print(f'Except str(key): {str(key)}')
+        return str(key)
 
 def getKey(key):
     try:
@@ -116,8 +140,9 @@ def getKey(key):
 
 # Função chamada quando uma tecla é pressionada
 def on_press(key):
-
-    key_str = getKey(key).lower()
+    key_str = get_key_representation(key)
+    #return
+    #key_str = getKey(key).lower()
 
     # Verifica se a tecla está sendo pressionada, evitando registrar várias vezes
     if key_str not in pressed_keys:
@@ -127,7 +152,7 @@ def on_press(key):
         key_count[key_str] += 1
 
         # Salvando o resultado em um arquivo JSON a cada tecla pressionada (opcional)
-        with open('key_count.json', 'w') as file:
+        with open('key_count.json', 'w', encoding='utf-8') as file:
             json.dump(key_count, file, ensure_ascii=False, indent=4)
 
         # Exibindo a tecla e sua contagem (opcional)
@@ -138,7 +163,9 @@ def on_press(key):
 # Função chamada quando uma tecla é liberada
 def on_release(key):
 
-    key_str = getKey(key).lower()
+    key_str = get_key_representation(key)
+    #return
+    #key_str = getKey(key).lower()
 
     # Remove a tecla da lista de teclas pressionadas
     if key_str in pressed_keys:
