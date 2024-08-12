@@ -17,17 +17,18 @@ if os.path.exists('key_count.json'):
     with open('key_count.json', 'r', encoding='windows-1252') as file:
         key_count.update(json.load(file))
 else:
-    with open('key_count.json', 'w', encoding='windows-1252') as file:
+    with open('key_count.json', 'w', encoding='utf-8') as file:
         file.write('{}')
 
 # Identificar teclado numérico
+# e teclas que são pressionadas junto ao Ctrl
 num_pad_keys = {
-    65: 'ctrl_a',
-    67: 'ctrl_c',
-    83: 'ctrl_s',
-    86: 'ctrl_v',
-    88: 'ctrl_x',
-    90: 'ctrl_z',
+    65: 'a',
+    67: 'c',
+    83: 's',
+    86: 'v',
+    88: 'x',
+    90: 'z',
     96: 'num_0',
     97: 'num_1',
     98: 'num_2',
@@ -48,9 +49,17 @@ num_pad_keys = {
 
 def getKey(key):
     try:
+        # print(f'Key: {str(key)} {str(key) == "<97>"}')
+        # if hasattr(key, 'vk'):
+        #     print(f'Vk: {key.vk}')
+        # if hasattr(key, 'char'):
+        #     print(f'Char: {key.char}')
+        # if hasattr(key, 'name'):
+        #     print(f'Name: {key.name}')
+        # return
         # Convertendo a tecla para string
         # Caso seja uma tecla presente em num_pad_keys, retorna o valor correspondente
-        print(key.vk)
+        # print(key.vk)
         if hasattr(key, 'vk') and key.vk in num_pad_keys:
             key_str = num_pad_keys[key.vk]
         else:
@@ -154,7 +163,7 @@ def on_release(key):
         # Parar o listener
         return False
 
-
+print('Monitorando as teclas...')
 # Configurando o listener para eventos do teclado
 with keyboard.Listener(on_press=on_press, on_release=on_release) as listener:
     try:

@@ -21,14 +21,20 @@ function restoreKey(event) {
 // Função para carregar o arquivo JSON com a contagem de teclas
 async function loadJson() {
     try {
-        const response = await fetch('./scriptPython/key_count.json')
-        const blob = await response.blob()
-        const text = await blob.text()
-        const decoder = new TextDecoder('utf-8')
-        const decodedText = decoder.decode(new TextEncoder().encode(text))
-        //const data = await response.json()
-        const data = JSON.parse(decodedText)
-        return data
+        // const response = await fetch('./scriptPython/key_count.json')
+        // const blob = await response.blob()
+        // const text = await blob.text()
+        // const decoder = new TextDecoder('utf-8')
+        // const decodedText = decoder.decode(new TextEncoder().encode(text))
+        // //const data = await response.json()
+        // const data = JSON.parse(decodedText)
+        // return data
+        const response = await fetch('./scriptPython/key_count.json');
+        const arrayBuffer = await response.arrayBuffer();
+        const decoder = new TextDecoder('windows-1252');
+        const decodedText = decoder.decode(arrayBuffer);
+        const data = JSON.parse(decodedText);
+        return data;
     } catch (error) {
         console.error(error)
     }
