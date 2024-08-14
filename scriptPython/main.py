@@ -42,7 +42,7 @@ num_pad_keys = {
 def get_key_representation(key):
     try:
         if hasattr(key, 'vk'):
-            print(f'Vk: {key.vk}')
+            #print(f'Vk: {key.vk}')
 
             # Verifica se tecla é do teclado numérico
             if key.vk in [None, 65437, 65439]:
@@ -52,29 +52,30 @@ def get_key_representation(key):
                     return num_pad_keys["5"]
                 elif key.vk == 65439:
                     return num_pad_keys[","]
-                print(f'Teclado numérico! {key.char}')
+                #print(f'Teclado numérico! {key.char}')
 
             elif key.vk == 65027:
                 return 'alt_gr'
 
         # Se for uma tecla de caractere, retorna o caractere
         if hasattr(key, 'char') and key.char:
-            print(f'Key.char: {key.char}')
+            #print(f'Key.char: {key.char}')
             return key.char.lower()
         elif hasattr(key, 'name'):
-            print(f'Key.name: {key.name}')
+            #print(f'Key.name: {key.name}')
             return key.name.lower()
         else:
-            print(f'str(key): {str(key)}')
+            #print(f'str(key): {str(key)}')
+            return None
     except AttributeError:
-        print(f'Except str(key): {str(key)}')
+        #print(f'Except str(key): {str(key)}')
         return str(key)
 
 def getKey(key):
     try:
         # Convertendo a tecla para string
         # Caso seja uma tecla presente em num_pad_keys, retorna o valor correspondente
-        print(key.vk)
+        #print(key.vk)
         if hasattr(key, 'vk') and key.vk in num_pad_keys:
             key_str = num_pad_keys[key.vk]
         else:
@@ -156,7 +157,7 @@ def on_press(key):
             json.dump(key_count, file, ensure_ascii=False, indent=4)
 
         # Exibindo a tecla e sua contagem (opcional)
-        print(f"{key_str}: {key_count[key_str]}")
+        #print(f"{key_str}: {key_count[key_str]}")
 
     #print(pressed_keys)
 
